@@ -1,0 +1,502 @@
+---
+title: "Homework 01"
+author: "Elisa Battista"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+---
+
+## Exercise 1: Stationary but not Ergodic. . .
+
+**Stationary VS Ergodic** Let εt ∼ GWN(Z,σ2), with GWN(Z,σ2) denoting a Gaussian white noise process with fixed variance σ2 and random mean Z ∼ U[−5,5], where U is the Uniform distribution. Note that Z is not indexed by t, thus it does not change with t as done by εt. Assume {εt}∞t=−∞ and Z to be independent. Define now your process of interest Xt = θXt−1 + εt. Then, based on the value of θ and the configuration of the initial state of the process determined by the observed z, the process can be weakly stationary but not ergodic; sometimes neither stationary or ergodic.
+
+**a.** We first want to check whether and when the process is stationary. Using the definition of weak sta- tionarity, prove that the process {Xt}∞t=−∞ has constant mean, variance and autocovariance function when \|θ\| \< 1. Intuitively, if the process is stationary, then the value of Z determines the equilibrium state of the process.\
+Note: As the proof will involve two nested random quantities, you may need to use the Law of Total Expectations and the Law of Total Variance.
+
+My process is the following, is an AR(1), an AR process is stationary whenever \|θ\| \< 1.
+
+$$
+X_t = \theta X_{t-1} + \epsilon_t
+$$ **Mean of** $X_t$**:**
+
+According to the Law of Total Expectation, the Unconditional Mean of $X_t$ is equal to the expected value of the Conditional Mean $E_X(X_t|Z)$.
+
+$$
+E_X(X_t)= E_Z(E_X(X_t|Z))
+$$
+
+Starting from the inner expectation I can notice that $E_X(X_t|Z)$ is equal to the mean of an AR(1) that we have already prove in class. So I rewrite
+
+$$
+E_X(X_t|Z)= \frac{Z}{1-\theta}
+$$
+
+note that the above result is valid when $|\theta|<1$, otherwise i would have $E_X(X_t|Z)=\infty$ . Now I have this: $E_X(X_t)=E_Z(\frac{Z}{1-\theta})=\frac{1}{1-\theta}E_Z(Z)=0$ .
+
+Since $Z \sim U(-5, 5)$, the expected value is equal to (-5+5)/2=0, so the result is 0. $$
+E_X(X_t)= \frac{0}{1 - \theta}= 0
+$$
+
+so the process has constant finite zero mean $E(X_t)=0$.
+
+**Variance:**
+
+$$
+Var(X_t)=Var(\theta X_{t-1} +\epsilon_t)
+$$ $$
+Var(X_t)=Var(\theta X_{t-1})+ Var(\epsilon_t) + 2Cov(X_{t-1}, \epsilon_t) = \theta^2 \text{Var}(X_{t-1}) + \text{Var}(\epsilon_t)$$
+
+Since the errors, by definition, are independent of the past values of the process, the covariance between $\epsilon_t$​ and $X_{t-1}$ is zero, and thus the last term is eliminated.
+
+Applying the Law of Total Variance we get:
+
+$$
+Var(X_t)= E_Z(Var_{X_t}(X_t|Z=z) + Var_Z(E_{X_t}(X_t|Z=z)
+$$ $$
+Var(X_t)= E_Z(\frac{\sigma^2}{1-\theta^2})+Var_Z(\frac{Z}{1-\theta})
+$$
+
+$$
+Var(X_t)= \frac{\sigma^2}{1-\theta^2} + \frac{1}{(1-\theta)^2}Var_Z(Z)
+$$
+
+Since $Z$ is Uniformly distributed, $Var_Z(Z) = \frac{(b-a)^2}{12}$ so is equal to $\frac{(10)^2}{12}$ so $\frac{100}{12}$. Finally, we get:
+
+$$
+Var(X_t)= \frac{\sigma^2}{1-\theta^2}+ \frac{100}{12}\frac{1}{(1-\theta)^2} 
+$$
+
+To conclude, we have to specify the existence condition to ensure my variance to be a positive finite and constant value:
+
+$$
+\left\{\begin{aligned}&\vert\theta\vert<1, \\&1-\theta^2>0, \\&\theta^2<1.\end{aligned}\right.
+$$
+
+**Autocovariance Function:**
+
+To compute the autocovariance function we have to use the Law of total Covariance. This law is analogous to the Law of Total Variance, where the total variance of a random variable is broken down into the variance of the conditional expectations and the expected conditional variance. Similarly, the Law of Total Covariance decomposes the covariance into two components: the expected conditional covariance and the covariance of the conditional expectations.
+
+$$
+\gamma_X(h)= Cov(X_t,X_{t-h})= E_Z(Cov_X(X_t,X_{t-h}|Z))+Cov_Z(E_X(X_t|Z),E_X(X_{t-h}|Z))
+$$
+
+We will approach this formula by first considering the first term, followed by the second. To calculate the conditional covariance in the first term, we will express $X_t$ it as follows:
+
+$$
+X_t = \theta X_{t-1} + \epsilon_t = \theta(\theta X_{t-2} + \epsilon_{t-1}) = \theta^2(\theta X_{t-3} + \epsilon_{t-2}) +\theta\epsilon_{t-1}+ \epsilon_t
+$$
+
+Following an iterative procedure we get that:
+
+$$
+X_t = \theta^hX_{t-h}+\sum_{i=0}^{h-i} \theta^i \epsilon_{t-i}
+$$
+
+Now I can substitute this in the previous formula:
+
+$$
+Cov_X(X_t,X_{t-h}|Z)= Cov_X(\theta^hX_{t-h}+\sum_{i=0}^{h-i} \theta^i \epsilon_{t-i},X_{t-h}|Z)= Cov_X(\theta^hX_{t-h},X_{t-h}|Z)+Cov_X(\sum_{i=0}^{h-i} \theta^i \epsilon_{t-i},X_{t-h}|Z)
+$$
+
+$$
+=\theta^hCov_X(X_{t-h},X_{t-h}|Z)+\sum_{i=0}^{h-i} \theta^iCov_X(\epsilon_{t-i},X_{t-h}|Z)
+$$
+
+Since the part involving the summation is equal to $0$, because the errors doesn't depend on the past observations. Therefore, the first term is simply equal to:
+
+$$
+\theta^hCov_X(X_{t-h},X_{t-h}|Z)= \theta^hVar_X(X_{t-h}|Z)= \theta^h(\frac{\sigma^2}{1-\theta^2})
+$$
+
+Note that this result is defined only for $\theta<1$ , because, otherwise the variance won't be defined.\
+Now we have to calculate the second term we have left:
+
+$$
+Cov_Z(E_X(X_t|Z),E_X(X_{t-h}|Z))= Cov_Z(E_Z(X_t|Z),E_Z(X_t|Z))= Var_Z(\frac{Z}{1-\theta})= (\frac{1}{1-\theta})^2Var_z(Z)=\frac{100}{12}\frac{1}{(1-\theta)^2} 
+$$
+
+Since my time series is stationary $E_X(X_t|Z)=E_X(X_{t-h}|Z)$ , I will end up having the covariance between two identical random variables, that by definition is equal to the variance, that I have previously computed. Even in this case $|\theta|<1$ .
+
+In the end, the unconditional autocovariance $Cov_X(X_t,X_{t-h})$ is equal to:
+
+$$
+Cov_X(X_t,X_{t-h})= \theta^{|h|}\frac{\sigma^2}{1-\theta^2}+\frac{100}{12}\frac{1}{(1-\theta)^2}
+$$
+
+The autocovariance only depend on $h$.
+
+**Autocorrelation function:**
+
+The autocorrelation by definition is:
+
+$$
+\rho_h=\frac{\gamma(h)}{\gamma(0)}
+$$
+
+By substituting the results I have previously obtained, I get:
+
+$$
+\rho_h= \frac{\theta^{|h|}\frac{\sigma^2}{1-\theta^2}+\frac{100}{12}\frac{1}{(1-\theta)^2}}{\frac{\sigma^2}{1-\theta^2}+ \frac{100}{12}\frac{1}{(1-\theta)^2}}
+$$
+
+If my process were ergodic, I would expect that as $h\to\infty$ , $\rho_ h\to0$. However, in our case, as $h\to\infty$, $\rho_h$ tends to a positive constant. This behaviour is consistent with a process that is stationary but not ergodic. Therefore, I can conclude saying that, for my process $\rho_h>0$ $\forall h$.
+
+**c)** Using the R functions rnorm() and runif(), setup a suitable simulation study to double-check the previous result (start with σ2 = 1 and θ = 0.9). Remember to set the seed before simulating the data: use set.seed(DDMMYYYY), where DDMMYYYY is your day of birth. Once you have generated a time series of length T = 100, use the ts() function to transform it in a time-series object.
+
+-   Plot the simulated series and comment on its stationarity.
+
+```{=html}
+<!-- -->
+```
+    library(forecast)
+    set.seed(26011999)
+    T = 100
+    sigma_sq = 1
+    theta = 0.9
+
+    Z = runif(1, min = -5, max = 5)
+    epsilon = rnorm(T, mean = Z, sd = sigma_sq)
+
+    X = rep(NA, T)
+    X[1] = Z
+    for(t in 2:T) {
+      X[t] = theta * X[t-1] + epsilon[t]  
+    }
+    X_ts = ts(X)
+    plot(X_ts, main = "Simulation", xlab = "time", ylab = "", lwd = 2)
+
+![](images/clipboard-1333697718.png)
+
+I have already proved that my time series is stationary. However, in the above plot, it exhibits a non-stationary pattern, which can be attributed to the relatively small sample size of $T = 100$ used in the simulation. When I increase the sample size to a larger $T$, such as $T = 10000$, the stationary nature of the series becomes evident. This suggests that the observed behavior in the smaller sample is likely due to the limited time horizon considered in the simulation.
+
+    acf(X_ts, main="ACF", xlab="Lag", lag.max= 50)
+
+![](images/clipboard-3745063416.png)
+
+    pacf(X_ts, main="PACF",xlab="Lag", lag.max= 50)
+
+![](images/clipboard-251904294.png)
+
+From the PACF, it is clear that the only statistically significant correlation occurs at lag 1. In fact my model is an AR(1).
+
+Now, i proceed with the calculation of the empirical mean and variance calculated on my simulated ts, and the theoretical one based on AR(1) model.
+
+-   Compute the empirical mean and variance and compare them with the expected theoretical values obtained in point a.
+
+```{=html}
+<!-- -->
+```
+    empirical_mean= mean(X_t)
+    empirical_mean
+
+    [1] -14.10787
+
+    theor_mean= 0/(1-theta)
+    theor_mean
+
+    [1] 0
+
+    empirical_variance= var(X_t)
+    empirical_variance
+
+    [1] 7.342449                
+
+    theor_variance= 1/(1-theta)^2*(100/12)+ (1/(1-theta^2))
+    theor_variance
+
+    [1] 838.5965
+
+We can clearly observe that both the empirical mean and the empirical variance significantly differ from the theoretical ones.
+
+-   Show in a single plot that by repeating the generation process say 5 times, the process converges toward a different equilibrium state depending on the observed value z.
+
+```{=html}
+<!-- -->
+```
+    set.seed(26011999)
+    N = 5
+    Y = matrix(NA, ncol = T, nrow = N)
+
+    for(n in 1:N){
+      Z = runif(1, min = -5, max = 5)
+      for(t in 2:T){
+        Y[n,1] = Z
+        eps = rnorm(n = T, mean = Z, sd = sigma)
+        Y[n,t] = theta*Y[n,t-1] + eps[t]
+      }
+    }
+    plot(Y[1,], type = "l", ylim = c(-60, 60), xlim = c(0, 100), xlab = "Time", ylab= "", main = "5 simulated trajectories")
+    abline(h = mean(Y[1,]), col = "red", lty = "dotted")
+
+    for(n in 2:N){
+      points(Y[n,], type = "l")
+      abline(h = mean(Y[n,]), col = "red", lty = 3)
+    }
+    legend(x = "bottomright", legend ="Mean Value", lty = 3, col = c("red"))
+
+![](images/clipboard-691056045.png)
+
+Each trajectory converges toward a different mean state. This is because the value of $Z$ is different for each simulation (sampled from a uniform distribution between $-5$ and $5$). The mean value of each series depends on the specific $Z$ value chosen in that simulation.
+
+Let's now have a look at the ACF; you can use the function acf() from stats package or auto_corr() from simts package. Set a suitable lag.max (e.g., lag.max = 50) and plot the ACF. What do you notice? Are the sample correlation, say ρˆh values, reflecting the theoretical findings?
+
+    theta = 0.9  
+    lag_max = 50
+    theoretical_values = theta^(0:lag_max)
+
+    acf(X_ts, main = "ACF Empirical vs Theoretical", xlab = "Lag", lag.max = lag_max)
+    lines(0:lag_max, theoretical_values, col = "red", lwd = 2)
+    legend("topright", legend = c("Empirical ACF", "Theoretical ACF"), col = c("black", "red"), lty = c(1, 1))
+
+![](images/clipboard-3180199478.png)
+
+This is coherent because here I am calculating the sample ACF for a specific realization of the process. The ACF decreases because a single realization does not capture the full behavior of a non-ergodic process. Since I am only working with one realization, which depends on a single sample of $Z$ , the ACF reflects the correlation structure of that specific trajectory, not the long-term behavior of the entire process. We are dealing with an AR(1) process where $\theta_0=Z$ , $X_t= Z+\theta_1X_{t-1}+\epsilon_t$ .
+
+    lag= 0:51
+    corr_values= numeric(length(lag))
+
+    for (h in lag) {
+      corr_values[h]= cor(Y[,1+h], Y[,1])
+    }
+
+    plot(corr_values,x= lag, type='h', col='grey', main= "Empirical ACF", xlab='lag')
+    abline(h=0)
+
+![](images/clipboard-820409736.png) Here instead, I am examining the entire process by calculating the empirical autcorrelation function. We know that a stochastic process is ergodic if it is asymptotically independent: any two collections of random variables $X_t$ and $X_{t-1}$ partitioned far apart in the sequence are essentially independent.
+
+If my process were ergodic, I would expect the ACF to approach 0 as $h$ increases. However, in my experiment, this does not occur. Instead, my empirical ACF remains close to 1 even for large lags. This suggests that the process is not ergodic, because the values of $X_t$ remain highly correlated even at large lags.
+
+-   Comment on the estimator $\rho^h$ in relation to the underlying theory for obtaining consistent estimates.
+
+Consistency is a desirable property of an estimator, indicating that as the sample size tends to infinity, the estimate approaches the true value of the population parameter. Formally, an estimator is considered consistent if, with increasing sample size, it converges **in probability** to the true value of $\theta$, otherwise the estimator is inconsistent.
+
+An alternative way to assess an estimator's consistency is by checking if both the following conditions are satisfied: $E(\hat{\Theta})=0$ and $Var(\hat{\Theta})=0$ when $n\to\infty$ . In my case, where I have a process that is not ergodic, the estimator may not be consistent when calculated on a single trajectory, as the process may not converge, unless multiple trajectories are collected or techniques are used to correct for the effects of non-ergodicity.
+
+## **Exercise 2: Guess the process. . .**
+
+Find a mate and ask them to help you run the following experiment, while you record it in a video format. The video recording should be uploaded on an online platform (e.g., your Google Drive) and you will need to share the link in your solution file.
+
+**Data-generating process** Ask your mate to toss 2 independent fair coins (simultaneously) and record their numerical outcome S given by the sum of the two individual coin outcomes as follows: • S = 2: you observed 2 Heads (HH); • S=1: you observed 1 Head and 1 Tail (HT or TH); • S = 0: you observed 2 Tails (TT). Ask your mate to repeat the tossing process for T = 100 rounds and record the outcome at each round t. Now, define your process of interest Xt, t = 1, . . . , T , as a linear combination of the outcomes S obtained from the previous 2 tosses/rounds (i.e., at t − 1 and t − 2) with coefficients α1 and α2, plus the outcome at the current toss (round t).
+
+**a. Figure out the type of process you are simulating (within the model classes covered in our course).**
+
+The process $X_t$ is defined as a linear combination of the observations $S_t$ , $S_{t-1}$, $S_{t-2}$ as follows:
+
+$$
+X_t= S_t+\alpha_1S_{t-1}+\alpha_2S_{t-2}
+$$
+
+where $S_t$ represent the sum at time $t$ of the outcomes of the two independent fair coin. Each $S_t$ can take values 0,1 or 2 values with the following probabilities:
+
+-   $S_t=0$ two Tails, $P(S_t=0)=0.25$
+
+-   $S_t=1$ one Head and one Tail, $P(S_t=1)=0.5$
+
+-   $S_t=2$ two Head, $P(S_t=2)=0.25$
+
+    my process $X_t$ is an MA(2) process with white noise terms $S_t$ , where $S_t$ follows a binomial distribution with parameter $n=2$ and $p=0.5$ .
+
+**b. Comment on the (weak) stationarity of Xt, by computing its mean, variance and ACF for lags h \> 0.** To verify weak stationarity, we need to check three conditions: constant mean, constant variance and the autocovariance function of $X_t$ must depend only on the lag $h$, and not on the specific time $t$.
+
+Mean of $S_t$ is calculated based on its possible values (0, 1, or 2) and their corresponding probabilities:
+
+$$
+E[S_t] = 0 \cdot P(S_t = 0) + 1 \cdot P(S_t = 1) + 2 \cdot P(S_t = 2)= 0 + 1 \cdot \frac{1}{2} + 2 \cdot \frac{1}{4} = 1
+$$
+
+To calculate the variance we have to calculate the second moment $E(S_t^2)$ first:
+
+$$
+E[S_t^2] = 0^2 \cdot P(S_t = 0) + 1^2 \cdot P(S_t = 1) + 2^2 \cdot P(S_t = 2)= 0 + 1 \cdot \frac{1}{2} + 4 \cdot \frac{1}{4} = \frac{1}{2} + 1 = \frac{3}{2}
+$$
+
+The variance is then:
+
+$$
+{Var}(S_t) = E(S_t^2) - (E(S_t))^2 = \frac{3}{2} - 1^2 = \frac{1}{2}
+$$
+
+Mean of $X_t$ : since the $S_t$'s are independent and identically distributed (i.i.d.), the mean and the variance of $X_t$ is:
+
+$$
+E(X_t​)=E(S_t​)+α_1​E(S_{t−1}​)+α_2​E(S_{t−2}​)=(1+α_1​+α_2​)⋅E(S_t​)=α_1​+α_2​+1
+$$
+
+$$
+Var(X_t​)=Var(S_t​+α_1​S_{t−1}​+α_2​S_{t−2}​)=Var(S_t​)+α_1^2​Var(S_{t−1}​)+α_2^2​Var(S_{t−2}​)​=(1+α_1^2​+α_2^2​)⋅\frac{1}{2}​
+$$ The mean and variance are both constant.
+
+Autocovariance function $\gamma(h)$ is computed as follow:
+
+-   for $h=0$
+
+    $$
+    \gamma(0) = \text{Var}(X_t) = \left(1 + \alpha_1^2 + \alpha_2^2\right) \cdot \frac{1}{2}.
+    $$
+
+-   for $h=1$
+
+    $$
+    \gamma(1) = \text{Cov}(X_t, X_{t-1}) = E\left[(X_t - E[X_t])(X_{t-1} - E[X_{t-1}])\right].
+    $$
+
+The key terms that contribute to $\gamma(1)$ come from the covariance between the corresponding terms of $X_t$ and $X_{t-1}$​. These terms involve the independent variables $S_t$ and the coefficients $\alpha_1$ and $\alpha_2$ :
+
+$$
+\text{Cov}(\alpha_1 S_{t-1}, S_{t-1}) = \alpha_1 \cdot \text{Var}(S_{t-1}) = \alpha_1 \cdot \frac{1}{2}-\text{Cov}(\alpha_2 S_{t-2}, \alpha_1 S_{t-2}) = \alpha_1 \alpha_2 \cdot \text{Var}(S_{t-2}) = \alpha_1 \alpha_2 \cdot \frac{1}{2}
+$$
+
+The total covariance is the sum of these contributions:
+
+$$
+\gamma(1) = \alpha_1 \cdot \frac{1}{2} + \alpha_1 \alpha_2 \cdot \frac{1}{2} = \alpha_1 (1 + \alpha_2) \cdot \frac{1}{2}.
+$$
+
+-   for $h=2$
+
+    $$
+    \gamma(2) = \text{Cov}(X_t, X_{t-2}) = E\left[(X_t - E(X_t))(X_{t-2} - E(X_{t-2}))\right].
+    $$
+
+    $$
+    \gamma(2) = \text{Cov}(\alpha_2 S_{t-2}, S_{t-2}) = \alpha_2 \cdot \text{Var}(S_{t-2}) = \alpha_2 \cdot \frac{1}{2}.
+    $$
+
+-   for $h\geq3$ . For $h\geq3$ , there are no common terms between $X_t$ and $X_{t-h}$ so: $$
+    \gamma(h) = 0 \quad \text{for } h \geq 3.
+    $$
+
+I conclude saying that the autocovariance depends only on lag $h$ and not on time $t$.
+
+Autocorrelation function by definition is $\rho(h) = \frac{\gamma(h)}{\gamma(0)}$ .
+
+-   for $h=1$
+
+    $$
+    \rho(1) = \frac{\alpha_1 (1 + \alpha_2) \cdot \frac{1}{2}}{\left(1 + \alpha_1^2 + \alpha_2^2\right) \cdot \frac{1}{2}} = \frac{\alpha_1 (1 + \alpha_2)}{1 + \alpha_1^2 + \alpha_2^2}.
+    $$
+
+-   for $h=2$
+
+    $$
+    \rho(2) = \frac{\alpha_2 \cdot \frac{1}{2}}{\left(1 + \alpha_1^2 + \alpha_2^2\right) \cdot \frac{1}{2}} = \frac{\alpha_2}{1 + \alpha_1^2 + \alpha_2^2}
+    $$
+
+-   for $h\geq3$
+
+$$
+\rho(h) = 0
+$$
+
+I have shown that my process $X_t$ meets all the criteria for weak stationarity. This result was anticipated, as a moving average process is always stationary by definition, being a sum of white noises.
+
+**c. Using the Yule-Walker equations seen in class, compute its PACF for lags h = 1, 2, 3.**
+
+The autocorrelation function in an MA(2) becomes $0$ for $h>2$ , while the PACF gradually decays.
+
+For $h=1$ the PACF is equal to the ACF ah $h=1$
+
+$$
+\phi_{11} = Corr(X_t,X_{t+1})=\rho(1) = \frac{\alpha_1 (1 + \alpha_2)}{1 + \alpha_1^2 + \alpha_2^2}.
+$$
+
+For $h=2$ :
+
+$$
+\phi_{22} = \text{Corr}(X_t, X_{t+2} \mid X_{t+1}) =\frac{\det\begin{bmatrix}1 & \rho(1) \\\rho(1) & \rho(2)\end{bmatrix}}{\det\begin{bmatrix}1 & \rho(1) \\\rho(1) & 1\end{bmatrix}},
+$$
+
+We proceed with the computation of the determinants and we get:
+
+$$
+\phi_{22} = \frac{\rho(2) - \rho(1)^2}{1 - \rho(1)^2}
+$$ For $h=3$
+
+$$
+\phi_{33} = \text{Corr}(X_t, X_{t+3} \mid X_{t+1}X_{t+2}) =\frac{\det\begin{bmatrix}1 & \rho(1) & \rho(1)\\\rho(1) & 1 & \rho(2)\\\rho(2) & \rho(1) & \rho(3)\end{bmatrix}}{\det\begin{bmatrix}1 & \rho(1) & \rho(2)\\\rho(1) & 1 & \rho(1)\\\rho(2) & \rho(1) & 1\end{bmatrix}}
+$$
+
+Taking in mind that $\rho(3)=0$ , calculate the determinants and finally get:
+
+$$
+\phi_{33} = \frac{\rho(1)\rho(2)^2 - 2\rho(1)\rho(2) + \rho(1)^3}{1 + 2\rho(1)^2\rho(2) - \rho(2)^2 - 2\rho(1)^2}.
+$$
+
+**d. Choose the values for the fixed coefficients α1 and α2 which define the influence of Xt on the past outcomes, and explain the choice you made.** Since my process is an MA with $q=2$, the conditions my coefficients must met in order to ensure the invertibility and the identifiability of the process are the following:
+
+$$
+\left\{\begin{aligned}    &|\alpha_2| < 1, \\    &\alpha_2 - \alpha_1 < 1, \\    &\alpha_1 + \alpha_2 < 1\end{aligned}\right.
+$$
+
+Let $\alpha_1=-0.5$ and $\alpha_2=-0.2$ , which satisfies the condition for invertibility.
+
+**e. Write an R script that generates the observation from your process of interest Xt, according to the outcomes St obtained from the experiment with your mate and the coefficients defined in point d. Plot the generated time series.**
+
+    s <- c(1,0,0,1,1,0,2,1,1,2,1,1,0,1,0,2,1,0,1,0,2,2,2,1,0,2,1,1,1,0,2,0,2,0,1,2,0,1,1,1,0,1,1,0,1,0,1,1,0,2,2,1,0,0,2,1,1,2,1,1,1,2,0,0,1,1,2,1,1,2,0,0,2,0,2,1,1,0,1,1,0,1,2,1,1,1,1,2,2,1,0,0,2,1,0,1,1,1,0,1)
+    length(s)
+
+    alpha1= -0.5
+    alpha2= -0.2
+    T=length(s)
+
+    set.seed(123)
+    S <- sample(c(0, 1, 2), size = T, replace = TRUE, prob = c(0.25, 0.5, 0.25))
+
+
+    X <- numeric(T)
+    X[1] = S[1]
+    X[2] = alpha1 * S[1] + S[2]
+    X[3:T] = alpha1 * S[2:(T-1)] + alpha2 * S[1:(T-2)] + S[3:T]
+
+    plot(X, type = "l", main = "Time Series of X", xlab = "Time", ylab = "X_t", col="black")
+
+![](images/clipboard-2312135693.png)
+
+The time series exhibits a stationary pattern, which is consistent with the fact that an MA(q) process is by definition stationary.
+
+**f. Comment on its stationarity, relating the sample values to the theoretical ones derived in point b.**
+
+    empirical_mean= mean(X)
+    empirical_mean
+
+    [1] 0.295
+
+    theor_mean= alpha1 + alpha2 + 1
+    theor_mean
+
+    [1] 0.3
+
+    empirical_variance= var(X)
+    empirical_variance
+
+    [1] 0.6450599
+
+    theor_variance= (1 + alpha1^2 + alpha2^2) * (1 / 2)
+    theor_variance
+
+    [1] 0.645
+
+We can observe that the values are slightly different, and their difference will approach $0$ as $T$ increases. I expect the same for ACF and PACF: their empirical value shows different results, but as T increases the empirical and the theoretical values will coincides.
+
+**g. As a final point, consider α1 = 1.5. What consequence would this value have for identifying the actual model that have generated the data? Which property is violated here?**
+
+Recalling the conditions that my coefficients must satisfies for an MA(2) to be invertible, they are as following:
+
+$$
+\left\{\begin{aligned}    &|\alpha_2| < 1, \\    &\alpha_2 - \alpha_1 < 1, \\    &\alpha_1 + \alpha_2 < 1\end{aligned}\right.
+$$
+
+If we impose $\alpha_1=1.5$ , the following condition must be valid for $\alpha_2$:
+
+**Condition 1**: $|\alpha_2|<1$, this condition will still apply directly, hence $-1<\alpha_2<1$ .
+
+**Condition 2**: If $\alpha_1=1.5\to\alpha_2<2.5$
+
+**Condition 3**: if $\alpha_1=1.5\to\alpha_2<-0.5$
+
+If we combine these results, we obtain the valid interval for $\alpha_2$ as $-1<\alpha_2<-0.5$ .
+
+When $\alpha_1=1.5$, the invertibility conditions will be satisfied as long as $\alpha_2$ falls within the specified interval. If $\alpha_2$ falls outside this interval, the invertibility condition will be violated. Specifically, in this case, the third condition is the most restrictive, as it imposes the strongest limitation on the value of $\alpha_2$ .
+
+## 
